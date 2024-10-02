@@ -29,7 +29,7 @@ class CoffeeClient {
       onError(response.errorMessage);
       return;
     }
-    print(response.data);
+    debugPrint(response.data.toString());
     CoffeeModel coffee = CoffeeModel.fromJson(response.data ?? {});
 
     onSuccess(coffee);
@@ -49,7 +49,7 @@ class CoffeeClient {
     if (!likedImagesList.contains(imageUrl)) {
       likedImagesList.add(imageUrl);
       await prefs.setStringList(likedImages, likedImagesList);
-      print('Image link saved to local storage');
+      debugPrint('Image link saved to local storage');
       // Save image to local storage
       await saveLikedImageLocally(imageUrl);
     }
@@ -80,10 +80,10 @@ class CoffeeClient {
       final response = await _dataProvider.download(imageUrl, filePath);
 
       if (response.statusCode == 200) {
-        print('Image saved to $filePath');
+        debugPrint('Image saved to $filePath');
       }
     } catch (e) {
-      print('Error saving image: $e');
+      debugPrint('Error saving image: $e');
     }
   }
 
