@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:very_good_coffee_app/global/constants.dart';
 import 'package:very_good_coffee_app/modules/home/domain/bloc/home_bloc.dart';
 import 'package:very_good_coffee_app/modules/home/models/coffee_model.dart';
 
@@ -54,114 +55,120 @@ class _ImageWidgetState extends State<ImageWidget> {
               borderRadius: BorderRadius.circular(30),
               child: Stack(
                 children: [
-                  if (!isLocal)
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  isLocal
-                      ? SizedBox(
+                  if (coffee == null && !isLocal)
+                    const SizedBox.shrink()
+                  else ...{
+                    if (!isLocal)
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 500,
-                          child: Image.file(
-                            imageFile!,
-                            fit: BoxFit.fill,
-                            // add shimmer effect while loading image
-                            frameBuilder: (BuildContext context, Widget child,
-                                int? frame, bool wasSynchronouslyLoaded) {
-                              if (wasSynchronouslyLoaded) {
-                                return child;
-                              } else {
-                                return SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 500,
-                                  child: AnimatedOpacity(
-                                    opacity: frame == null ? 0 : 1,
-                                    duration: const Duration(seconds: 1),
-                                    curve: Curves.easeOut,
-                                    child: child,
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        )
-                      : SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 500,
-                          child: Image.network(
-                            coffee!.imageUrl ?? '',
-                            fit: BoxFit.fill,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child; // Image loaded successfully
-                              }
-                              return SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: 500,
-                                child: Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[100]!,
-                                  child: Container(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              );
-                            },
-                            // add shimmer effect while loading image
-                            frameBuilder: (BuildContext context, Widget child,
-                                int? frame, bool wasSynchronouslyLoaded) {
-                              if (wasSynchronouslyLoaded) {
-                                return child;
-                              } else {
-                                return SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 500,
-                                  child: AnimatedOpacity(
-                                    opacity: frame == null ? 0 : 1,
-                                    duration: const Duration(seconds: 1),
-                                    curve: Curves.easeOut,
-                                    child: child,
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                  // Gradient Overlay for Text
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.black54, Colors.transparent],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      child: Text(
-                        (isLocal ? (imageFile!.path) : (coffee!.imageUrl ?? ''))
-                            .split('/')
-                            .last,
-                        style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    isLocal
+                        ? SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 500,
+                            child: Image.file(
+                              imageFile!,
+                              fit: BoxFit.fill,
+                              // add shimmer effect while loading image
+                              frameBuilder: (BuildContext context, Widget child,
+                                  int? frame, bool wasSynchronouslyLoaded) {
+                                if (wasSynchronouslyLoaded) {
+                                  return child;
+                                } else {
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 500,
+                                    child: AnimatedOpacity(
+                                      opacity: frame == null ? 0 : 1,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.easeOut,
+                                      child: child,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          )
+                        : SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 500,
+                            child: Image.network(
+                              coffee!.imageUrl ?? '',
+                              fit: BoxFit.fill,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child; // Image loaded successfully
+                                }
+                                return SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 500,
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[100]!,
+                                    child: Container(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              },
+                              // add shimmer effect while loading image
+                              frameBuilder: (BuildContext context, Widget child,
+                                  int? frame, bool wasSynchronouslyLoaded) {
+                                if (wasSynchronouslyLoaded) {
+                                  return child;
+                                } else {
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 500,
+                                    child: AnimatedOpacity(
+                                      opacity: frame == null ? 0 : 1,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.easeOut,
+                                      child: child,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                    // Gradient Overlay for Text
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.black54, Colors.transparent],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        child: Text(
+                          (isLocal
+                                  ? (imageFile!.path)
+                                  : (coffee!.imageUrl ?? ''))
+                              .split('/')
+                              .last,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // Favorite Button
-                  if (coffee != null)
+                    // Favorite Button
+                    // if (coffee != null)
                     Positioned(
                       top: 10,
                       right: 10,
@@ -179,12 +186,22 @@ class _ImageWidgetState extends State<ImageWidget> {
                           ],
                         ),
                         child: IconButton(
-                          icon: Icon(coffee!.isLiked
+                          icon: Icon(isLocal || coffee!.isLiked
                               ? Icons.favorite
                               : Icons.favorite_border),
                           color: Colors.redAccent,
-                          // splashColor: Colors.transparent,
                           onPressed: () {
+                            if (isLocal) {
+                              context.read<HomeBloc>().add(
+                                  UpdateLikedStatusEvent(
+                                      imageUrl: baseUrl +
+                                          imageFile!.path.split('/').last,
+                                      isLiked: false));
+                              setState(() {
+                                isLocal = false;
+                              });
+                              return;
+                            }
                             if (coffee!.isLiked) {
                               context.read<HomeBloc>().add(
                                   UpdateLikedStatusEvent(
@@ -206,6 +223,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                         ),
                       ),
                     ),
+                  },
                 ],
               ),
             ),
