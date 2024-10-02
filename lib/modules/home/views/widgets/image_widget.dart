@@ -168,61 +168,61 @@ class _ImageWidgetState extends State<ImageWidget> {
                       ),
                     ),
                     // Favorite Button
-                    // if (coffee != null)
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                              offset: Offset(2, 3),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: Icon(isLocal || coffee!.isLiked
-                              ? Icons.favorite
-                              : Icons.favorite_border),
-                          color: Colors.redAccent,
-                          onPressed: () {
-                            if (isLocal) {
-                              context.read<HomeBloc>().add(
-                                  UpdateLikedStatusEvent(
-                                      imageUrl: baseUrl +
-                                          imageFile!.path.split('/').last,
-                                      isLiked: false));
-                              setState(() {
-                                isLocal = false;
-                              });
-                              return;
-                            }
-                            if (coffee!.isLiked) {
-                              context.read<HomeBloc>().add(
-                                  UpdateLikedStatusEvent(
-                                      imageUrl: coffee!.imageUrl ?? '',
-                                      isLiked: false));
-                              setState(() {
-                                coffee = coffee!.copyWith(isLiked: false);
-                              });
-                            } else {
-                              context.read<HomeBloc>().add(
-                                  UpdateLikedStatusEvent(
-                                      imageUrl: coffee!.imageUrl ?? '',
-                                      isLiked: true));
-                              setState(() {
-                                coffee = coffee!.copyWith(isLiked: true);
-                              });
-                            }
-                          },
+                    if (coffee != null)
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 6,
+                                spreadRadius: 1,
+                                offset: Offset(2, 3),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: Icon(isLocal || coffee!.isLiked
+                                ? Icons.favorite
+                                : Icons.favorite_border),
+                            color: Colors.redAccent,
+                            onPressed: () {
+                              if (isLocal) {
+                                context.read<HomeBloc>().add(
+                                    UpdateLikedStatusEvent(
+                                        imageUrl: baseUrl +
+                                            imageFile!.path.split('/').last,
+                                        isLiked: false));
+                                setState(() {
+                                  isLocal = false;
+                                });
+                                return;
+                              }
+                              if (coffee!.isLiked) {
+                                context.read<HomeBloc>().add(
+                                    UpdateLikedStatusEvent(
+                                        imageUrl: coffee!.imageUrl ?? '',
+                                        isLiked: false));
+                                setState(() {
+                                  coffee = coffee!.copyWith(isLiked: false);
+                                });
+                              } else {
+                                context.read<HomeBloc>().add(
+                                    UpdateLikedStatusEvent(
+                                        imageUrl: coffee!.imageUrl ?? '',
+                                        isLiked: true));
+                                setState(() {
+                                  coffee = coffee!.copyWith(isLiked: true);
+                                });
+                              }
+                            },
+                          ),
                         ),
                       ),
-                    ),
                   },
                 ],
               ),

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider<HomeBloc>(
       create: (context) => HomeBloc(),
       child: MaterialApp.router(
-        title: 'Flutter Demo',
+        title: 'Very Good Coffee App',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,

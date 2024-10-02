@@ -25,15 +25,10 @@ class CoffeeClient {
   }) async {
     final NetworkResponseModel response = await _dataProvider.fetchData(apiUrl);
 
-    print('Test 1****************');
-
     if (response.hasException) {
-      print('Test 1****************');
       onError(response.errorMessage);
       return;
     }
-
-    print('Fetching coffee image');
     print(response.data);
     CoffeeModel coffee = CoffeeModel.fromJson(response.data ?? {});
 
