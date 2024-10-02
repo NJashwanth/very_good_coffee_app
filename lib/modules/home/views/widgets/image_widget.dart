@@ -58,86 +58,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                   if (coffee == null && !isLocal)
                     const SizedBox.shrink()
                   else ...{
-                    if (!isLocal)
-                      Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 500,
-                          color: Colors.white,
-                        ),
-                      ),
+                    if (!isLocal) const BackgroundShimmer(),
                     isLocal
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 500,
-                            child: Image.file(
-                              imageFile!,
-                              fit: BoxFit.fill,
-                              // add shimmer effect while loading image
-                              frameBuilder: (BuildContext context, Widget child,
-                                  int? frame, bool wasSynchronouslyLoaded) {
-                                if (wasSynchronouslyLoaded) {
-                                  return child;
-                                } else {
-                                  return SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 500,
-                                    child: AnimatedOpacity(
-                                      opacity: frame == null ? 0 : 1,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeOut,
-                                      child: child,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          )
-                        : SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 500,
-                            child: Image.network(
-                              coffee!.imageUrl ?? '',
-                              fit: BoxFit.fill,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child; // Image loaded successfully
-                                }
-                                return SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 500,
-                                  child: Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              },
-                              // add shimmer effect while loading image
-                              frameBuilder: (BuildContext context, Widget child,
-                                  int? frame, bool wasSynchronouslyLoaded) {
-                                if (wasSynchronouslyLoaded) {
-                                  return child;
-                                } else {
-                                  return SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 500,
-                                    child: AnimatedOpacity(
-                                      opacity: frame == null ? 0 : 1,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeOut,
-                                      child: child,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
+                        ? fileImageWidget(context)
+                        : NetworkImageWidget(coffee: coffee),
                     // Gradient Overlay for Text
                     Positioned(
                       bottom: 0,
@@ -185,42 +109,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                               ),
                             ],
                           ),
-                          child: IconButton(
-                            icon: Icon(isLocal || coffee!.isLiked
-                                ? Icons.favorite
-                                : Icons.favorite_border),
-                            color: Colors.redAccent,
-                            onPressed: () {
-                              if (isLocal) {
-                                context.read<HomeBloc>().add(
-                                    UpdateLikedStatusEvent(
-                                        imageUrl: baseUrl +
-                                            imageFile!.path.split('/').last,
-                                        isLiked: false));
-                                setState(() {
-                                  isLocal = false;
-                                });
-                                return;
-                              }
-                              if (coffee!.isLiked) {
-                                context.read<HomeBloc>().add(
-                                    UpdateLikedStatusEvent(
-                                        imageUrl: coffee!.imageUrl ?? '',
-                                        isLiked: false));
-                                setState(() {
-                                  coffee = coffee!.copyWith(isLiked: false);
-                                });
-                              } else {
-                                context.read<HomeBloc>().add(
-                                    UpdateLikedStatusEvent(
-                                        imageUrl: coffee!.imageUrl ?? '',
-                                        isLiked: true));
-                                setState(() {
-                                  coffee = coffee!.copyWith(isLiked: true);
-                                });
-                              }
-                            },
-                          ),
+                          child: favoriteIconWidget(context),
                         ),
                       ),
                   },
@@ -230,6 +119,141 @@ class _ImageWidgetState extends State<ImageWidget> {
           ),
         );
       },
+    );
+  }
+
+  IconButton favoriteIconWidget(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+          isLocal || coffee!.isLiked ? Icons.favorite : Icons.favorite_border),
+      color: Colors.redAccent,
+      onPressed: () {
+        if (isLocal) {
+          context.read<HomeBloc>().add(UpdateLikedStatusEvent(
+              imageUrl: baseUrl + imageFile!.path.split('/').last,
+              isLiked: false));
+          setState(() {
+            isLocal = false;
+          });
+          return;
+        }
+        if (coffee!.isLiked) {
+          context.read<HomeBloc>().add(UpdateLikedStatusEvent(
+              imageUrl: coffee!.imageUrl ?? '', isLiked: false));
+          setState(() {
+            coffee = coffee!.copyWith(isLiked: false);
+          });
+        } else {
+          context.read<HomeBloc>().add(UpdateLikedStatusEvent(
+              imageUrl: coffee!.imageUrl ?? '', isLiked: true));
+          setState(() {
+            coffee = coffee!.copyWith(isLiked: true);
+          });
+        }
+      },
+    );
+  }
+
+  Widget fileImageWidget(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 500,
+      child: Image.file(
+        imageFile!,
+        fit: BoxFit.fill,
+        // add shimmer effect while loading image
+        frameBuilder: (BuildContext context, Widget child, int? frame,
+            bool wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded) {
+            return child;
+          } else {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 500,
+              child: AnimatedOpacity(
+                opacity: frame == null ? 0 : 1,
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeOut,
+                child: child,
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class BackgroundShimmer extends StatelessWidget {
+  const BackgroundShimmer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 500,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
+class NetworkImageWidget extends StatelessWidget {
+  const NetworkImageWidget({
+    super.key,
+    required this.coffee,
+  });
+
+  final CoffeeModel? coffee;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 500,
+      child: Image.network(
+        coffee!.imageUrl ?? '',
+        fit: BoxFit.fill,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child; // Image loaded successfully
+          }
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 500,
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+        // add shimmer effect while loading image
+        frameBuilder: (BuildContext context, Widget child, int? frame,
+            bool wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded) {
+            return child;
+          } else {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 500,
+              child: AnimatedOpacity(
+                opacity: frame == null ? 0 : 1,
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeOut,
+                child: child,
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }
