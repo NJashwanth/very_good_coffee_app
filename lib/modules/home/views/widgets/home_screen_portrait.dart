@@ -25,7 +25,7 @@ class _HomeScreenPortraitState extends State<HomeScreenPortrait> {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Coffee'),
+          title: const Text('Very Good Coffee'),
         ),
         floatingActionButton: const FavButtonWidget(),
         body: BlocConsumer<HomeBloc, HomeState>(
@@ -78,7 +78,10 @@ class _CoffeeSectionState extends State<CoffeeSection> {
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
       child: Column(
         children: [
-          ImageWidget(coffee: coffee,isLocal: false,),
+          ImageWidget(
+            coffee: coffee,
+            isLocal: false,
+          ),
           const NextImageButton(),
         ],
       ),
